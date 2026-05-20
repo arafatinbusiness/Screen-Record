@@ -1,24 +1,24 @@
 # ScreenRecord Deployment Guide
 
-This guide walks you through deploying ScreenRecord to production using Render (backend + database) and Vercel (frontend).
+This guide walks you through deploying ScreenRecord to production using **Neon** (PostgreSQL), **Render** (backend), and **Vercel** (frontend).
 
 ## Prerequisites
 
 - GitHub account with the ScreenRecord repository
+- Neon account (https://neon.tech)
 - Render account (https://render.com)
 - Vercel account (https://vercel.com)
 
-## Step 1: Deploy Render PostgreSQL Database
+## Step 1: Deploy Neon PostgreSQL Database
 
-1. Log in to Render (https://render.com)
-2. Click **New +** → **PostgreSQL**
+1. Log in to Neon (https://neon.tech)
+2. Click **Create Project**
 3. Configure:
    - **Name**: `screenrecord-db`
-   - **PostgreSQL Version**: Latest
    - **Region**: Choose closest to you
-   - **Datadog API Key**: Leave blank
-4. Click **Create Database**
-5. Once created, copy the **External Database URL** (you'll need this for the backend)
+4. Click **Create**
+5. Once created, copy the **Connection String** (you'll need this for the backend)
+   - It looks like: `postgresql://user:password@ep-xxx.us-east-2.aws.neon.tech/screenrecord?sslmode=require`
 
 ## Step 2: Deploy Backend to Render
 
@@ -34,7 +34,7 @@ This guide walks you through deploying ScreenRecord to production using Render (
    - **Region**: Same as database
 
 5. Add Environment Variables:
-   - `DATABASE_URL`: Paste the PostgreSQL URL from Step 1
+   - `DATABASE_URL`: Paste the Neon PostgreSQL URL from Step 1
    - `ADMIN_API_KEY`: Generate a secure random key (e.g., using `openssl rand -base64 32`)
    - `PORT`: `3000`
    - `NODE_ENV`: `production`
@@ -102,7 +102,7 @@ This guide walks you through deploying ScreenRecord to production using Render (
 
 ### Database Connection Error
 - Verify `DATABASE_URL` is correct in Render environment
-- Check database is still running in Render dashboard
+- Check database is still running in Neon dashboard
 - Try running `node db/init.js` again from Render shell
 
 ### 401 Unauthorized on Admin Dashboard
@@ -121,13 +121,13 @@ This guide walks you through deploying ScreenRecord to production using Render (
 
 1. **Use strong API key**: Generate with `openssl rand -base64 32`
 2. **Monitor logs**: Check Render/Vercel logs for errors
-3. **Backup database**: Render has automated backups, verify they're enabled
+3. **Backup database**: Neon has automated backups, verify they're enabled
 4. **Use custom domain**: Update Vercel to use your custom domain
 5. **Enable HTTPS**: Both Render and Vercel provide free HTTPS
 6. **Set up monitoring**: Consider adding error tracking with Sentry
 
 ## Scaling
 
-- **Database**: Upgrade Render PostgreSQL plan if needed
+- **Database**: Upgrade Neon PostgreSQL plan if needed
 - **Backend**: Upgrade Render instance type
 - **Frontend**: Vercel automatically scales
