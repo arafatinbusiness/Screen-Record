@@ -92,23 +92,44 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
               onLoad={() => setIsLoaded(true)}
             />
             
-            {/* Loom-style bottom gradient overlay */}
-            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+            {/* Loom-style bottom gradient overlay - heavier to hide YouTube controls */}
+            <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none" />
             
-            {/* Shopify Heroes branding badge - covers YouTube logo area */}
-            <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10">
+            {/* Bottom bar to cover YouTube logo (left) and "Watch on YouTube" button (right) */}
+            <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-20 z-10 flex items-end justify-between px-4 sm:px-6 pb-4 sm:pb-4">
+              {/* Left side - covers YouTube logo */}
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://shopifyheroesagency.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 sm:gap-3 px-4 py-2.5 sm:px-6 sm:py-3 text-xs sm:text-xs md:text-sm font-bold text-white bg-gradient-to-r from-purple-600/90 to-blue-600/90 backdrop-blur-md rounded-lg border border-white/20 shadow-lg hover:from-purple-500 hover:to-blue-500 transition-all duration-200"
+                >
+                  <svg className="w-4 h-4 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                  <span>Shopify Heroes</span>
+                </a>
+              </div>
+              
+              {/* Right side - covers "Watch on YouTube" button */}
               <a
                 href="https://shopifyheroesagency.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-4 sm:py-2.5 text-[10px] sm:text-sm md:text-base font-semibold text-white bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-200 shadow-lg"
+                className="inline-flex items-center gap-2 sm:gap-3 px-5 py-2.5 sm:px-7 sm:py-3 text-xs sm:text-xs md:text-sm font-bold text-white bg-gradient-to-r from-orange-500/90 to-pink-600/90 backdrop-blur-md rounded-lg border border-white/20 shadow-lg hover:from-orange-400 hover:to-pink-500 transition-all duration-200"
               >
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg className="w-4 h-4 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
                   <path d="M2 17l10 5 10-5" />
                   <path d="M2 12l10 5 10-5" />
                 </svg>
-                Shopify Heroes
+                <span>Shopify Heroes</span>
+                <svg className="w-3 h-3 sm:w-3 sm:h-3 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17l9.2-9.2M17 17V7H7" />
+                </svg>
               </a>
             </div>
           </div>

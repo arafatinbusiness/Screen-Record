@@ -1,9 +1,79 @@
+'use client';
+
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, Share2, BarChart3, Lock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { ArrowRight, Share2, BarChart3, Lock, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 
+const SITE_PASSWORD = 'aaa111';
+
 export default function Home() {
+  const [password, setPassword] = useState('');
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === SITE_PASSWORD) {
+      setIsUnlocked(true);
+      setError('');
+    } else {
+      setError('Incorrect password');
+      setPassword('');
+    }
+  };
+
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-muted flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+              <Lock className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl">Access Required</CardTitle>
+            <CardDescription>
+              This site is private. Please enter the password to continue.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="relative">
+                <Input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError('');
+                  }}
+                  className="pr-10"
+                  autoFocus
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+              {error && (
+                <p className="text-sm text-destructive font-medium">{error}</p>
+              )}
+              <Button type="submit" className="w-full">
+                Enter Site
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-muted">
       {/* Navigation */}
@@ -83,7 +153,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground">
-                Keep videos in draft mode until you&apos;re ready. Full control over what gets shared.
+                Keep videos in draft mode until you're ready. Full control over what gets shared.
               </p>
             </CardContent>
           </Card>
