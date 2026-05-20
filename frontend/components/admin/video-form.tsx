@@ -19,7 +19,7 @@ export function VideoForm({ video, onSuccess }: VideoFormProps) {
   const [title, setTitle] = useState(video?.title || '');
   const [description, setDescription] = useState(video?.description || '');
   const [youtubeUrl, setYoutubeUrl] = useState(video?.youtube_url || '');
-  const [isPublished, setIsPublished] = useState(video?.is_published || false);
+  const [isPublished, setIsPublished] = useState(video?.is_published ?? true);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
