@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Copy, Trash2, Edit2 } from 'lucide-react';
-import { getAdminVideos, deleteVideo, Video } from '@/lib/api';
+import { Copy, Trash2, Edit2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getAdminVideos, deleteVideo, Video, PaginationInfo } from '@/lib/api';
 import { toast } from 'sonner';
 
 interface VideoListProps {
@@ -14,20 +14,25 @@ interface VideoListProps {
   refreshTrigger?: number;
 }
 
+const PAGE_SIZE = 20;
+
 export function VideoList({ onEditClick, refreshTrigger }: VideoListProps) {
   const [videos, setVideos] = useState<Video[]>([]);
+  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [deleteId, setDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchVideos();
-  }, [refreshTrigger]);
+    fetchVideos(currentPage);
+  }, [refreshTrigger, currentPage]);
 
-  async function fetchVideos() {
+  async function fetchVideos(page: number) {
     try {
       setLoading(true);
-      const data = await getAdminVideos();
-      setVideos(data);
+      const data = await getAdminVideos(page, PAGE_SIZE);
+      setVideos(data.videos);
+      setPagination(data.pagination);
     } catch (error) {
       toast.error('Failed to load videos');
       console.error(error);
@@ -126,6 +131,37 @@ export function VideoList({ onEditClick, refreshTrigger }: VideoListProps) {
         ))}
       </div>
 
+      {/* Pagination */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between pt-6 pb-2">
+          <p className="text-sm text-muted-foreground">
+            Page {pagination.page} of {pagination.totalPages} ({pagination.total} total)
+          </p>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage <= 1}
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              className="gap-1"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!pagination.hasMore}
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="gap-1"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -141,3 +177,4 @@ export function VideoList({ onEditClick, refreshTrigger }: VideoListProps) {
     </>
   );
 }
+ 

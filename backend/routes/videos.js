@@ -5,13 +5,33 @@ const { verifyApiKey } = require('../utils/auth');
 
 const router = express.Router();
 
-// Get all videos (admin only)
+// Get all videos (admin only) - with pagination
 router.get('/admin/videos', verifyApiKey, async (req, res) => {
   try {
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 20));
+    const offset = (page - 1) * limit;
+
+    // Get total count
+    const countResult = await pool.query('SELECT COUNT(*) FROM videos');
+    const total = parseInt(countResult.rows[0].count);
+
+    // Get paginated results
     const result = await pool.query(
-      'SELECT id, title, description, youtube_url, share_token, created_at, is_published FROM videos ORDER BY created_at DESC'
+      'SELECT id, title, description, youtube_url, share_token, created_at, is_published FROM videos ORDER BY created_at DESC LIMIT $1 OFFSET $2',
+      [limit, offset]
     );
-    res.json(result.rows);
+
+    res.json({
+      videos: result.rows,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasMore: offset + limit < total,
+      },
+    });
   } catch (error) {
     console.error('Error fetching videos:', error);
     res.status(500).json({ error: 'Failed to fetch videos' });

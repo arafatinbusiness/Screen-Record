@@ -16,6 +16,19 @@ export interface Video {
   is_published: boolean;
 }
 
+export interface PaginationInfo {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+export interface PaginatedVideos {
+  videos: Video[];
+  pagination: PaginationInfo;
+}
+
 export interface Analytics {
   stats: {
     total_views: number;
@@ -33,8 +46,8 @@ function apiUrl(path: string): string {
 }
 
 // Admin API calls (require authentication)
-export async function getAdminVideos(): Promise<Video[]> {
-  const res = await fetch(apiUrl('/api/admin/videos'), {
+export async function getAdminVideos(page: number = 1, limit: number = 20): Promise<PaginatedVideos> {
+  const res = await fetch(apiUrl(`/api/admin/videos?page=${page}&limit=${limit}`), {
     headers: {
       'X-API-Key': ADMIN_API_KEY,
     },
