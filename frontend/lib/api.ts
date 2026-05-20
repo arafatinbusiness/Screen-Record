@@ -1,5 +1,10 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000';
+// When using Vercel experimental services, backend is at /_/backend prefix on same domain
+// When using standalone backend (Render/local), use NEXT_PUBLIC_BACKEND_URL
+const isVercelServices = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && !process.env.NEXT_PUBLIC_BACKEND_URL;
+const API_BASE_URL = isVercelServices ? '' : (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:3000');
+const API_PREFIX = isVercelServices ? '/_/backend' : '';
 const ADMIN_API_KEY = process.env.NEXT_PUBLIC_ADMIN_API_KEY || '';
+
 
 export interface Video {
   id: string;
@@ -23,9 +28,13 @@ export interface Analytics {
   }>;
 }
 
+function apiUrl(path: string): string {
+  return `${API_BASE_URL}${API_PREFIX}${path}`;
+}
+
 // Admin API calls (require authentication)
 export async function getAdminVideos(): Promise<Video[]> {
-  const res = await fetch(`${API_BASE_URL}/api/admin/videos`, {
+  const res = await fetch(apiUrl('/api/admin/videos'), {
     headers: {
       'X-API-Key': ADMIN_API_KEY,
     },
@@ -41,7 +50,7 @@ export async function createVideo(data: {
   youtubeUrl: string;
   isPublished?: boolean;
 }): Promise<Video> {
-  const res = await fetch(`${API_BASE_URL}/api/admin/videos`, {
+  const res = await fetch(apiUrl('/api/admin/videos'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -63,7 +72,7 @@ export async function updateVideo(
     isPublished: boolean;
   }>
 ): Promise<Video> {
-  const res = await fetch(`${API_BASE_URL}/api/admin/videos/${id}`, {
+  const res = await fetch(apiUrl(`/api/admin/videos/${id}`), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -77,7 +86,7 @@ export async function updateVideo(
 }
 
 export async function deleteVideo(id: string): Promise<void> {
-  const res = await fetch(`${API_BASE_URL}/api/admin/videos/${id}`, {
+  const res = await fetch(apiUrl(`/api/admin/videos/${id}`), {
     method: 'DELETE',
     headers: {
       'X-API-Key': ADMIN_API_KEY,
@@ -88,7 +97,7 @@ export async function deleteVideo(id: string): Promise<void> {
 }
 
 export async function getVideoAnalytics(videoId: string): Promise<Analytics> {
-  const res = await fetch(`${API_BASE_URL}/api/admin/analytics/${videoId}`, {
+  const res = await fetch(apiUrl(`/api/admin/analytics/${videoId}`), {
     headers: {
       'X-API-Key': ADMIN_API_KEY,
     },
@@ -100,7 +109,7 @@ export async function getVideoAnalytics(videoId: string): Promise<Analytics> {
 
 // Public API calls
 export async function getPublicVideo(shareToken: string): Promise<Video> {
-  const res = await fetch(`${API_BASE_URL}/api/videos/${shareToken}`);
+  const res = await fetch(apiUrl(`/api/videos/${shareToken}`));
   
   if (!res.ok) throw new Error('Video not found');
   return res.json();
@@ -110,7 +119,7 @@ export async function trackVideoView(
   videoId: string,
   watchDuration: number
 ): Promise<void> {
-  await fetch(`${API_BASE_URL}/api/analytics/track`, {
+  await fetch(apiUrl('/api/analytics/track'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
