@@ -1,0 +1,129 @@
+================================================================================
+                    SCREENRECORD - DEPLOY IN 5 STEPS
+================================================================================
+
+STEP 1: CREATE DATABASE (Render.com)
+  1. Go to https://render.com
+  2. New + → PostgreSQL
+  3. Name: screenrecord-db
+  4. Create
+  5. Copy the "External Database URL"
+
+STEP 2: DEPLOY BACKEND (Render.com)
+  1. New + → Web Service
+  2. Connect GitHub repo
+  3. Root Directory: backend
+  4. Environment Variables:
+     DATABASE_URL = (from Step 1)
+     ADMIN_API_KEY = openssl rand -base64 32
+     PORT = 3000
+     NODE_ENV = production
+  5. Create
+  6. Copy backend URL when ready
+
+STEP 3: INIT DATABASE (Render Shell)
+  1. Open Render backend service
+  2. Click "Shell"
+  3. Run: cd /app && node db/init.js
+  4. Wait for: "Database initialized successfully"
+
+STEP 4: DEPLOY FRONTEND (Vercel.com)
+  1. Go to https://vercel.com
+  2. Add New → Project
+  3. Import your GitHub repo
+  4. Root Directory: frontend
+  5. Environment Variables:
+     NEXT_PUBLIC_BACKEND_URL = (from Step 2)
+     NEXT_PUBLIC_ADMIN_API_KEY = (same from Step 2)
+  6. Deploy
+  7. Copy frontend URL when ready
+
+STEP 5: UPDATE CORS (Render.com)
+  1. Go back to Render backend
+  2. Environment → Edit CORS_ORIGIN
+  3. Set to your Vercel URL (from Step 4)
+  4. Save (auto-redeploys)
+
+DONE! Your app is live!
+
+================================================================================
+                              TEST YOUR APP
+================================================================================
+
+1. Visit your Vercel URL
+2. Click "Admin Dashboard"
+3. Create test video:
+   - Title: "Test"
+   - YouTube URL: https://www.youtube.com/embed/dQw4w9WgXcQ
+   - Create
+4. Copy share link
+5. Open in private window → Video should play!
+
+================================================================================
+                            IMPORTANT VALUES
+================================================================================
+
+DATABASE_URL:
+  From: Render PostgreSQL dashboard
+  Format: postgresql://user:password@host:port/dbname
+
+ADMIN_API_KEY:
+  Generate: openssl rand -base64 32
+  Use in: Both Render backend AND Vercel frontend
+  Keep secret!
+
+BACKEND_URL:
+  From: Render Web Service dashboard
+  Format: https://screenrecord-backend.onrender.com
+  No trailing slash!
+
+FRONTEND_URL:
+  From: Vercel project dashboard
+  Format: https://screenrecord.vercel.app
+  Use in CORS_ORIGIN
+
+================================================================================
+                          IF SOMETHING BREAKS
+================================================================================
+
+Backend won't start?
+  → Check /health endpoint
+  → Check DATABASE_URL is correct
+  → Check logs in Render dashboard
+
+Admin dashboard returns 401?
+  → NEXT_PUBLIC_ADMIN_API_KEY must match backend ADMIN_API_KEY
+  → Redeploy frontend after changing
+
+Videos don't load?
+  → YouTube URL must be: https://www.youtube.com/embed/VIDEO_ID
+  → Video must be Published (not Draft)
+  → Check browser console for CORS errors
+
+CORS errors?
+  → Update CORS_ORIGIN on Render backend
+  → Must match your Vercel URL exactly
+  → Redeploy backend after updating
+
+Can't access database from shell?
+  → DATABASE_URL might be incorrect
+  → Verify it works: psql $DATABASE_URL
+
+================================================================================
+                        DOCUMENTATION FILES
+================================================================================
+
+PRODUCTION_SETUP.md       ← Detailed step-by-step (read this first!)
+DEPLOYMENT.md              ← Full troubleshooting guide
+README.md                  ← Project overview
+backend/README.md          ← API documentation
+frontend/README.md         ← Frontend setup
+
+================================================================================
+                           YOU'RE READY TO GO!
+================================================================================
+
+Time to deploy: ~30 minutes
+Everything is production-ready. Just follow the 5 steps above.
+
+Questions? Check PRODUCTION_SETUP.md for detailed explanations.
