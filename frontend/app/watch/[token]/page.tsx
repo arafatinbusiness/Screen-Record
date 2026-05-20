@@ -3,10 +3,36 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { VideoPlayer } from '@/components/video-player';
-import { Card, CardContent } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { getPublicVideo, Video } from '@/lib/api';
+
+function LoadingSkeleton() {
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="w-full max-w-6xl mx-auto px-4 py-8 space-y-6">
+        {/* Video skeleton */}
+        <div className="relative">
+          <div className="absolute -inset-4 bg-gradient-to-b from-primary/5 via-transparent to-transparent rounded-3xl blur-2xl opacity-40" />
+          <div className="relative bg-zinc-900/50 rounded-2xl overflow-hidden ring-1 ring-white/5 animate-pulse">
+            <div className="aspect-video flex items-center justify-center">
+              <div className="flex flex-col items-center gap-4">
+                <div className="w-20 h-20 rounded-2xl bg-zinc-800" />
+                <div className="w-40 h-3 rounded-full bg-zinc-800" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Title skeleton */}
+        <div className="space-y-3 px-1">
+          <div className="h-10 sm:h-12 md:h-14 w-3/4 bg-muted rounded-lg animate-pulse" />
+          <div className="h-4 w-64 bg-muted/50 rounded animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function WatchPage() {
   const params = useParams();
@@ -36,11 +62,7 @@ export default function WatchPage() {
   }, [token]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-muted-foreground">Loading video...</div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   if (error || !video) {
@@ -56,7 +78,7 @@ export default function WatchPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8 px-4 max-w-4xl">
+      <div className="w-full max-w-6xl mx-auto px-4 py-8 sm:py-12 md:py-16">
         <VideoPlayer video={video} />
       </div>
     </div>
