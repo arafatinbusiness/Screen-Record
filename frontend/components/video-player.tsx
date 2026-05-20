@@ -77,17 +77,41 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
               </div>
             </div>
           )}
-          <iframe
-            width="100%"
-            height="100%"
-            src={`${embedUrl}?autoplay=1&rel=0`}
-            title={video.title}
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className={`w-full aspect-video transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0 absolute inset-0'}`}
-            onLoad={() => setIsLoaded(true)}
-          />
+          
+          {/* Video wrapper for overlay positioning */}
+          <div className="relative w-full aspect-video">
+            <iframe
+              width="100%"
+              height="100%"
+              src={`${embedUrl}?autoplay=1&modestbranding=1&rel=0`}
+              title={video.title}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className={`w-full h-full absolute inset-0 transition-opacity duration-500 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setIsLoaded(true)}
+            />
+            
+            {/* Loom-style bottom gradient overlay */}
+            <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 via-black/20 to-transparent pointer-events-none" />
+            
+            {/* Shopify Heroes branding badge - covers YouTube logo area */}
+            <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 z-10">
+              <a
+                href="https://shopifyheroesagency.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-2.5 py-1.5 sm:px-4 sm:py-2.5 text-[10px] sm:text-sm md:text-base font-semibold text-white bg-white/10 backdrop-blur-md rounded-full border border-white/20 hover:bg-white/20 transition-all duration-200 shadow-lg"
+              >
+                <svg className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+                Shopify Heroes
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 

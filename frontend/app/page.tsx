@@ -9,7 +9,14 @@ export default function Home() {
       {/* Navigation */}
       <nav className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="text-2xl font-bold">ScreenRecord</div>
+          <a
+            href="https://shopifyheroesagency.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-2xl font-bold hover:text-primary transition-colors"
+          >
+            Shopify Heroes
+          </a>
           <div className="flex gap-4">
             <Link href="/admin">
               <Button variant="ghost">Admin Dashboard</Button>
@@ -103,7 +110,18 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
-          <p>&copy; 2024 ScreenRecord. All rights reserved.</p>
+          <p>
+            &copy; 2024{' '}
+            <a
+              href="https://shopifyheroesagency.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-primary transition-colors"
+            >
+              Shopify Heroes Agency
+            </a>
+            . All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
