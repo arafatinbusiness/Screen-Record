@@ -80,7 +80,7 @@ export function VideoPlayer({ video }: VideoPlayerProps) {
           <iframe
             width="100%"
             height="100%"
-            src={`${embedUrl}?autoplay=1&rel=0`}
+            src={`${embedUrl}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`}
             title={video.title}
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
